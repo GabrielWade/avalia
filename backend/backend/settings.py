@@ -98,19 +98,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
 
     'default': {
-
         'ENGINE': 'django.db.backends.postgresql',
-
-        'NAME': 'avalia',
-
+        'NAME': 'postgres',
         'USER': 'postgres',
-
-        'PASSWORD': '123',
-
-        'HOST': 'localhost',
-
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
         'PORT': '5432',
-
     }
 
 }
