@@ -7,11 +7,14 @@ class Subjects(models.Model):
         return self.name
 
 class Users_subjects(models.Model):
-    class1 = models.ForeignKey(Subjects, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
     auth_user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.subject
+
 class Exam(models.Model):
-    class1 = models.ForeignKey(Subjects, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
 
     def __str__(self):
