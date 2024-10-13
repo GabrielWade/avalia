@@ -11,10 +11,10 @@ class Users_subjects(models.Model):
     auth_user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.subject
+        return str(self.subject)
 
 class Exam(models.Model):
-    subject = models.ForeignKey(Subjects, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subjects, on_delete=models.PROTECT)
     name = models.CharField(max_length=255)
 
     def __str__(self):
