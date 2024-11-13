@@ -12,4 +12,5 @@ urlpatterns = [
          name='token_refresh'),
     path('', include('authentification.urls')),
     path('exams/', include('exams.urls')),
+    path('exams_location/', include('exam_location.urls')),
 ]

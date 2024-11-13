@@ -23,7 +23,6 @@ MONTH_CHOICES = [
     ('DEZ', 'DEZEMBRO'),
 ]
 
-# Definindo os dias de 1 a 31
 DAY_CHOICES = [(str(i), str(i)) for i in range(1, 32)]
 
 class Calendar(models.Model):
