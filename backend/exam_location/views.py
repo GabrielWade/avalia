@@ -35,7 +35,12 @@ class ExamScheduledView(APIView):
         day = data.get('calendar')
         exam_time_id = data.get('exam_time')
         exam = data.get('exam')
+        month = data.get('month')
 
+        capacity = ExamLocation.objects.get(id=exam_location_id).exam_capacity
+        scheduled = ExamScheduled.objects.filter(exam_location=exam_location_id, day=day, exam_time=exam_time_id, month=month).count()
+        if scheduled >= capacity:
+            return Response({'error': 'Capacidade máxima atingida'}, status=400)
         try:
             # Busca os objetos com base nos IDs
             exam_location = ExamLocation.objects.get(id=exam_location_id)
@@ -52,7 +57,8 @@ class ExamScheduledView(APIView):
             ExamScheduled.objects.filter(user=user, exam=exam).update(
                 exam_location=exam_location,
                 day=day,
-                exam_time=exam_time
+                exam_time=exam_time,
+                month=month
             )
         else:
             exam_scheduled = ExamScheduled.objects.create(
@@ -60,7 +66,8 @@ class ExamScheduledView(APIView):
                 user=user,
                 day=day,
                 exam_time=exam_time,
-                exam=exam
+                exam=exam,
+                month=month
             )
 
         return Response({'message': 'Prova agendada com sucesso'}, status=201)
