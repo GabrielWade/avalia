@@ -1,10 +1,10 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
-import DashboardCard from "./DashboardCard";
+import TableComponent from "./TableComponent";
 
 import '../styles/global.css'
 
-export const Home = () => {
+export const Exam = () => {
     const [message, setMessage] = useState('');
 
     useEffect(() => {
@@ -30,20 +30,8 @@ export const Home = () => {
 
     return (
         <div className="container mt-5">
-            <DashboardCard
-                number="3"
-                text="Avaliações, Exercícios e Locais de Prova"
-                icon={<i className="bi bi-list"></i>}
-                link="/exam"
-            />
-            <DashboardCard
-                number="9"
-                text="Resultados"
-                icon={<i className="bi bi-bar-chart-line"></i>}
-                link="/resultados"
-            />
+            <h1 className="bold-heading">Agende sua prova</h1>
+            <TableComponent/>
         </div>
     );
-};
-
-
+}

@@ -1,0 +1,14 @@
+:root {
+    --primary-color: #198754;
+    --secondary-color: #495057;
+    --font-size: 16px;
+}
+
+.custom-link {
+    color: var(--primary-color) !important;
+}
+
+.bold-heading {
+    font-weight: bold;
+    color: var(--secondary-color) !important;
+}

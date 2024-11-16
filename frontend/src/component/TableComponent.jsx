@@ -4,6 +4,8 @@ import axios from 'axios';
 import { getSubjects } from '../api/UserSubject';
 import ScheduleExamModal from './ScheduleExamModal';
 
+import '../styles/global.css';
+
 function TableComponent() {
   const [userId, setUserId] = useState(null);
   const [materias, setMaterias] = useState([]);
@@ -65,7 +67,7 @@ function TableComponent() {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>Nome da Matéria</th>
+            <th className="bold-heading">Matérias</th>
             <th></th>
           </tr>
         </thead>
@@ -74,7 +76,7 @@ function TableComponent() {
             <tr key={materia.id}>
               <td>{materia.subject_name}</td>
               <td>
-                <Button variant="primary" onClick={() => handleAgendarProva(materia)}>
+                <Button variant="primary" size="sm" onClick={() => handleAgendarProva(materia)}>
                   Agendar Prova
                 </Button>
               </td>
