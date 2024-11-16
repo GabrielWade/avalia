@@ -48,12 +48,19 @@ class ExamScheduledView(APIView):
         except ExamTime.DoesNotExist:
             return Response({'error': 'Horário de prova inválido'}, status=400)
 
-        exam_scheduled = ExamScheduled.objects.create(
-            exam_location=exam_location,
-            user=user,
-            day=day,
-            exam_time=exam_time,
-            exam=exam
-        )
+        if ExamScheduled.objects.filter(user=user, exam=exam).exists():
+            ExamScheduled.objects.filter(user=user, exam=exam).update(
+                exam_location=exam_location,
+                day=day,
+                exam_time=exam_time
+            )
+        else:
+            exam_scheduled = ExamScheduled.objects.create(
+                exam_location=exam_location,
+                user=user,
+                day=day,
+                exam_time=exam_time,
+                exam=exam
+            )
 
         return Response({'message': 'Prova agendada com sucesso'}, status=201)
