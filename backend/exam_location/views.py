@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from .models import ExamLocation, ExamTime, Calendar, ExamScheduled
 from .serializers import ExamLocationSerializer, ExamLocationTimeSerializer, ExamLocationCalendarSerializer
+from exams.models import Exam
 
 class ExamLocationView(APIView):
     def get(self, request):
@@ -25,21 +26,21 @@ class ExamLocationCalendarView(APIView):
 
 class ExamScheduledView(APIView):
     def post(self, request):
-        # Garante que o usuário esteja autenticado
         user = request.user
         if not user.is_authenticated:
             return Response({'error': 'Usuário não autenticado'}, status=400)
 
         data = request.data
         exam_location_id = data.get('exam_location')
-        calendar_id = data.get('calendar')
+        day = data.get('calendar')
         exam_time_id = data.get('exam_time')
+        exam = data.get('exam')
 
         try:
             # Busca os objetos com base nos IDs
             exam_location = ExamLocation.objects.get(id=exam_location_id)
-            calendar = Calendar.objects.get(id=calendar_id)
             exam_time = ExamTime.objects.get(id=exam_time_id)
+            exam = Exam.objects.get(id=exam)
         except ExamLocation.DoesNotExist:
             return Response({'error': 'Local de prova inválido'}, status=400)
         except Calendar.DoesNotExist:
@@ -47,12 +48,12 @@ class ExamScheduledView(APIView):
         except ExamTime.DoesNotExist:
             return Response({'error': 'Horário de prova inválido'}, status=400)
 
-        # Cria o agendamento com o usuário autenticado
         exam_scheduled = ExamScheduled.objects.create(
             exam_location=exam_location,
             user=user,
-            calendar=calendar,
-            exam_time=exam_time
+            day=day,
+            exam_time=exam_time,
+            exam=exam
         )
 
         return Response({'message': 'Prova agendada com sucesso'}, status=201)

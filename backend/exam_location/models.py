@@ -47,8 +47,9 @@ class ExamTime(models.Model):
 class ExamScheduled(models.Model):
     exam_location = models.ForeignKey(ExamLocation, on_delete=models.CASCADE)
     user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
-    calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE)
+    day = models.IntegerField()
     exam_time = models.ForeignKey(ExamTime, on_delete=models.CASCADE)
+    exam = models.ForeignKey('exams.Exam', on_delete=models.CASCADE)
 
     def __str__(self):
         return f"{self.exam_location.name} - {self.user.username} - {self.calendar} - {self.exam_time}"

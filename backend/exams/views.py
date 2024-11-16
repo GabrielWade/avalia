@@ -1,9 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Users_subjects
-from .serializers import UsersSubjectsSerializer
+from .models import Users_subjects, Exam
+from .serializers import UsersSubjectsSerializer, ExamSerializer
 
-class User_subject(APIView):
+class User_subject_view(APIView):
     def get(self, request):
         if request.user.is_authenticated:
             user_id = request.user.id
@@ -20,3 +20,12 @@ class User_subject(APIView):
             }, status=200)
         else:
             return Response({'error': 'Usuário não autenticado'}, status=401)
+
+class Exam_view(APIView):  # Renomeando para ExamView
+    def get(self, request, id):
+        exam = Exam.objects.filter(subject_id=id)
+        serializer_exam = ExamSerializer(exam, many=True)
+        return Response(serializer_exam.data, status=200)
+
+
+
