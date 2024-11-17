@@ -3,6 +3,7 @@
 <div align="center">
   <img src="https://img.shields.io/badge/docker%20compose-2496ED.svg?style=for-the-badge&logo=docker&logoColor=white" alt="docker compose" />
   <img src="https://img.shields.io/badge/DJANGO-%23FF9900.svg?style=for-the-badge&logo=Django&logoColor=white" alt="django" />
+  <img src="https://img.shields.io/badge/JWT-Token-000000.svg?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT Token" />
   <img src="https://img.shields.io/badge/REDIS-%D4FAFF.svg?style=for-the-badge&logo=REDIS&logoColor=redis" alt="redis" />
   <img src="https://img.shields.io/badge/celery-37814A.svg?style=for-the-badge&logo=celery&logoColor=white" alt="celery" />
   <img src="https://img.shields.io/badge/postgre-0078D7.svg?style=for-the-badge&logo=postgresql&logoColor=white" alt="postgre" />
