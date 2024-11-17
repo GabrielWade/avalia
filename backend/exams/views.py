@@ -28,4 +28,26 @@ class Exam_view(APIView):  # Renomeando para ExamView
         return Response(serializer_exam.data, status=200)
 
 
+class Home_view(APIView):
+    def get(self, request):
+        user = request.user
+
+        # Buscar IDs dos subjects relacionados ao usuário
+        subjects = Users_subjects.objects.filter(auth_user_id=user.id).values_list('subject_id', flat=True)
+        # Verificar se encontrou algum subject
+        if not subjects:
+            return Response({'total': 0, 'exams': []}, status=200)
+
+        # Buscar exames associados aos subjects encontrados
+        exams = Exam.objects.filter(subject_id__in=subjects)
+
+        # Contar total de exames
+        total = exams.count()
+
+        # Serializar os dados dos exames
+        exams_data = [{'id': exam.id, 'name': exam.name} for exam in exams]
+
+        return Response({'total': total, 'exams': exams_data}, status=200)
+
+
 

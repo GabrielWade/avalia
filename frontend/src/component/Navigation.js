@@ -1,12 +1,6 @@
 import React, {useState, useEffect} from 'react';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Dropdown from 'react-bootstrap/Dropdown';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-
+import {Navbar, Nav, Dropdown, Modal, Button, Container} from 'react-bootstrap';
 import '../styles/global.css';
-
 import unifaaLogo from '../assets/images/unifaa_logo.webp';
 
 export function Navigation() {
@@ -15,18 +9,17 @@ export function Navigation() {
     const [showTermsModal, setShowTermsModal] = useState(false);
 
     useEffect(() => {
-        if (localStorage.getItem('access_token') !== null) {
+        const token = localStorage.getItem('access_token');
+        if (token) {
             setIsAuth(true);
-            fetchUserData();
+            fetchUserData(token);
         }
-    }, [isAuth]);
+    }, []);
 
-    const fetchUserData = async () => {
+    const fetchUserData = async (token) => {
         try {
             const response = await fetch('http://localhost:8000/user/', {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-                },
+                headers: {Authorization: `Bearer ${token}`},
             });
             if (response.ok) {
                 const data = await response.json();
@@ -41,57 +34,58 @@ export function Navigation() {
 
     const handleShowTermsModal = () => setShowTermsModal(true);
     const handleCloseTermsModal = () => setShowTermsModal(false);
-
-    const handleGoToAdmin = () => {
-        window.location.href = 'http://localhost:8000/admin/login/?next=/admin/';
-    };
+    const handleGoToAdmin = () => window.location.href = 'http://localhost:8000/admin/login/?next=/admin/';
 
     return (
-        <div>
-            <Navbar bg="light" variant="light" className="px-3">
-                <Navbar.Brand href="/">
-                    <img
-                        src={unifaaLogo}
-                        width="150"
-                        height="auto"
-                        className="d-inline-block align-top"
-                        alt="Logo"
-                    />
-                </Navbar.Brand>
-                <Nav className="me-auto">
-                    {isAuth ? (
-                        <>
-                            <Nav.Link href="/" className="custom-link">Home</Nav.Link>
-                            <Nav.Link href="/exam" className="custom-link">Avaliações</Nav.Link>
-                            <Nav.Link href="/resultados" className="custom-link">Resultados</Nav.Link>
-                        </>
-                    ) : null}
-                </Nav>
-                <Nav>
-                    {isAuth && user ? (
-                        <Dropdown align="end">
-                            <Dropdown.Toggle variant="light" className="custom-link" id="user-dropdown">
-                                {user.username}
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                {user.is_superuser && (
-                                    <Dropdown.Item onClick={handleGoToAdmin}>
-                                        Grupo: Super User
-                                    </Dropdown.Item>
-                                )}
-                                <Dropdown.Item onClick={handleShowTermsModal}>
-                                    Termos de Uso
-                                </Dropdown.Item>
-                                <Dropdown.Item href="/logout">Logout</Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    ) : (
-                        <Nav.Link href="/login" className="custom-link">Login</Nav.Link>
-                    )}
-                </Nav>
+        <>
+            <Navbar bg="light" expand="lg" className="px-3">
+                <Container>
+                    <Navbar.Brand href="/">
+                        <img
+                            src={unifaaLogo}
+                            width="150"
+                            height="auto"
+                            className="d-inline-block align-top"
+                            alt="Logo"
+                        />
+                    </Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav"/>
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="me-auto">
+                            {isAuth && (
+                                <>
+                                    <Nav.Link href="/" className="custom-link">Home</Nav.Link>
+                                    <Nav.Link href="/exam" className="custom-link">Avaliações</Nav.Link>
+                                    <Nav.Link href="/resultados" className="custom-link">Resultados</Nav.Link>
+                                </>
+                            )}
+                        </Nav>
+                        <Nav>
+                            {isAuth && user ? (
+                                <Dropdown align="end">
+                                    <Dropdown.Toggle variant="light" className="custom-link">
+                                        {user.username}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {user.is_superuser && (
+                                            <Dropdown.Item onClick={handleGoToAdmin}>
+                                                Grupo: Super User
+                                            </Dropdown.Item>
+                                        )}
+                                        <Dropdown.Item onClick={handleShowTermsModal}>
+                                            Termos de Uso
+                                        </Dropdown.Item>
+                                        <Dropdown.Item href="/logout">Logout</Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            ) : (
+                                <Nav.Link href="/login" className="custom-link">Login</Nav.Link>
+                            )}
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
             </Navbar>
 
-            {/* Modal para Termos de Uso */}
             <Modal show={showTermsModal} onHide={handleCloseTermsModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Termos de Uso</Modal.Title>
@@ -127,6 +121,6 @@ export function Navigation() {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        </div>
+        </>
     );
 }
