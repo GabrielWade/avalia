@@ -23,7 +23,7 @@
 - [Python](https://python.com)
 - [Node](https://node.com)
 
-<h3>Colonar Projeto</h3>
+<h3>Clonar Projeto</h3>
 
 Como clonar o projeto
 
@@ -94,3 +94,7 @@ celery -A backend beat --loglevel=info
 http://localhost:3000/
 
 ``````
+<h2 id="started">📸 Imagens do Projeto</h2>
+
+https://github.com/user-attachments/assets/007a5371-ba52-43b0-8941-cee206f65c99
+
