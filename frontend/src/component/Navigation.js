@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import Dropdown from 'react-bootstrap/Dropdown';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
@@ -10,16 +11,40 @@ import unifaaLogo from '../assets/images/unifaa_logo.webp';
 
 export function Navigation() {
     const [isAuth, setIsAuth] = useState(false);
+    const [user, setUser] = useState(null);
     const [showTermsModal, setShowTermsModal] = useState(false);
 
     useEffect(() => {
         if (localStorage.getItem('access_token') !== null) {
             setIsAuth(true);
+            fetchUserData();
         }
     }, [isAuth]);
 
+    const fetchUserData = async () => {
+        try {
+            const response = await fetch('http://localhost:8000/user/', {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('access_token')}`,
+                },
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setUser(data);
+            } else {
+                console.error('Failed to fetch user data');
+            }
+        } catch (error) {
+            console.error('Error fetching user data:', error);
+        }
+    };
+
     const handleShowTermsModal = () => setShowTermsModal(true);
     const handleCloseTermsModal = () => setShowTermsModal(false);
+
+    const handleGoToAdmin = () => {
+        window.location.href = 'http://localhost:8000/admin/login/?next=/admin/';
+    };
 
     return (
         <div>
@@ -39,19 +64,34 @@ export function Navigation() {
                             <Nav.Link href="/" className="custom-link">Home</Nav.Link>
                             <Nav.Link href="/exam" className="custom-link">Avaliações</Nav.Link>
                             <Nav.Link href="/resultados" className="custom-link">Resultados</Nav.Link>
-                            <Nav.Link onClick={handleShowTermsModal} className="custom-link">Termos de Uso</Nav.Link>
                         </>
                     ) : null}
                 </Nav>
                 <Nav>
-                    {isAuth ?
-                        <Nav.Link href="/logout" className="custom-link">Logout</Nav.Link> :
+                    {isAuth && user ? (
+                        <Dropdown align="end">
+                            <Dropdown.Toggle variant="light" className="custom-link" id="user-dropdown">
+                                {user.username}
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                {user.is_superuser && (
+                                    <Dropdown.Item onClick={handleGoToAdmin}>
+                                        Grupo: Super User
+                                    </Dropdown.Item>
+                                )}
+                                <Dropdown.Item onClick={handleShowTermsModal}>
+                                    Termos de Uso
+                                </Dropdown.Item>
+                                <Dropdown.Item href="/logout">Logout</Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ) : (
                         <Nav.Link href="/login" className="custom-link">Login</Nav.Link>
-                    }
+                    )}
                 </Nav>
             </Navbar>
 
-            {/* Modal for Terms of Use */}
+            {/* Modal para Termos de Uso */}
             <Modal show={showTermsModal} onHide={handleCloseTermsModal} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Termos de Uso</Modal.Title>

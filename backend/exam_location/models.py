@@ -53,4 +53,4 @@ class ExamScheduled(models.Model):
     month = models.CharField(max_length=3, choices=MONTH_CHOICES)
 
     def __str__(self):
-        return f"{self.exam_location.name} - {self.user.username} - {self.calendar} - {self.exam_time}"
+        return f"{self.exam_location.name} - {self.user.username} - {self.exam_time}"

@@ -21,7 +21,7 @@ function ScheduleExamModal({
     const [mesesDisponiveis, setMesesDisponiveis] = useState([]);
     const [diasDisponiveis, setDiasDisponiveis] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false); // Estado para bloquear ações enquanto processa
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handleLocalChange = async (event) => {
         const localProvaId = event.target.value;
