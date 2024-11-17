@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ExamLocation, ExamTime, Calendar
+from .models import ExamLocation, ExamTime, Calendar, ScheduledEmail
 
 
 class ExamLocationSerializer(serializers.ModelSerializer):
@@ -16,3 +16,8 @@ class ExamLocationCalendarSerializer(serializers.ModelSerializer):
     class Meta:
         model = Calendar
         fields = ['id', 'exam_location', 'days', 'month']
+
+class ScheduledEmailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ScheduledEmail
+        fields = ['id', 'email', 'schedule_time', 'subject', 'message']

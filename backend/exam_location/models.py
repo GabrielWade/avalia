@@ -54,3 +54,14 @@ class ExamScheduled(models.Model):
 
     def __str__(self):
         return f"{self.exam_location.name} - {self.user.username} - {self.exam_time}"
+
+class ScheduledEmail(models.Model):
+    email = models.EmailField()
+    subject = models.CharField(max_length=255)
+    message = models.TextField()
+    schedule_time = models.DateTimeField()
+    sent = models.BooleanField(default=False)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.email

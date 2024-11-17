@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import DashboardCard from "./DashboardCard";
 
@@ -16,7 +16,7 @@ export const Home = () => {
             (async () => {
                 try {
                     // Requisição para a URL original
-                    const { data: homeData } = await axios.get('http://localhost:8000/home/', {
+                    const {data: homeData} = await axios.get('http://localhost:8000/home/', {
                         headers: {
                             'Content-Type': 'application/json',
                         }
@@ -24,7 +24,7 @@ export const Home = () => {
                     setMessage(homeData.message);
 
                     // Requisição para a nova URL de exames
-                    const { data: examsData } = await axios.get('http://localhost:8000/exams/home/', {
+                    const {data: examsData} = await axios.get('http://localhost:8000/exams/home/', {
                         headers: {
                             'Content-Type': 'application/json',
                         }
@@ -58,24 +58,24 @@ export const Home = () => {
                 <h2>Lista de Provas</h2>
                 <table className="table table-bordered table-striped mt-3">
                     <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Nome da Prova</th>
-                        </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Nome da Prova</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {exams.length > 0 ? (
-                            exams.map((exam) => (
-                                <tr key={exam.id}>
-                                    <td>{exam.id}</td>
-                                    <td>{exam.name}</td>
-                                </tr>
-                            ))
-                        ) : (
-                            <tr>
-                                <td colSpan="2" className="text-center">Nenhuma prova disponível</td>
+                    {exams.length > 0 ? (
+                        exams.map((exam) => (
+                            <tr key={exam.id}>
+                                <td>{exam.id}</td>
+                                <td>{exam.name}</td>
                             </tr>
-                        )}
+                        ))
+                    ) : (
+                        <tr>
+                            <td colSpan="2" className="text-center">Nenhuma prova disponível</td>
+                        </tr>
+                    )}
                     </tbody>
                 </table>
             </div>

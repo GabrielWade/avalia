@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Navbar, Nav, Dropdown, Modal, Button, Container} from 'react-bootstrap';
+import {Navbar, Nav, Dropdown, Modal, Button, Container, Table} from 'react-bootstrap';
 import '../styles/global.css';
 import unifaaLogo from '../assets/images/unifaa_logo.webp';
 
@@ -7,6 +7,8 @@ export function Navigation() {
     const [isAuth, setIsAuth] = useState(false);
     const [user, setUser] = useState(null);
     const [showTermsModal, setShowTermsModal] = useState(false);
+    const [showAlertsModal, setShowAlertsModal] = useState(false);
+    const [alerts, setAlerts] = useState([]);
 
     useEffect(() => {
         const token = localStorage.getItem('access_token');
@@ -32,8 +34,49 @@ export function Navigation() {
         }
     };
 
+    const fetchAlerts = async () => {
+        try {
+            const token = localStorage.getItem('access_token');
+            const response = await fetch('http://localhost:8000/exams_location/alert/', {
+                headers: {Authorization: `Bearer ${token}`},
+            });
+            if (response.ok) {
+                const data = await response.json();
+                setAlerts(data.emails);
+            } else {
+                console.error('Failed to fetch alerts');
+            }
+        } catch (error) {
+            console.error('Error fetching alerts:', error);
+        }
+    };
+
+    const deleteAlert = async (id) => {
+        try {
+            const token = localStorage.getItem('access_token');
+            const response = await fetch(`http://localhost:8000/exams_location/alert/${id}/`, {
+                method: 'DELETE',
+                headers: {Authorization: `Bearer ${token}`},
+            });
+            if (response.ok) {
+                setAlerts((prevAlerts) => prevAlerts.filter(alert => alert.id !== id));
+            } else {
+                console.error('Failed to delete alert');
+            }
+        } catch (error) {
+            console.error('Error deleting alert:', error);
+        }
+    };
+
     const handleShowTermsModal = () => setShowTermsModal(true);
     const handleCloseTermsModal = () => setShowTermsModal(false);
+
+    const handleShowAlertsModal = () => {
+        fetchAlerts();
+        setShowAlertsModal(true);
+    };
+    const handleCloseAlertsModal = () => setShowAlertsModal(false);
+
     const handleGoToAdmin = () => window.location.href = 'http://localhost:8000/admin/login/?next=/admin/';
 
     return (
@@ -57,6 +100,7 @@ export function Navigation() {
                                     <Nav.Link href="/" className="custom-link">Home</Nav.Link>
                                     <Nav.Link href="/exam" className="custom-link">Avaliações</Nav.Link>
                                     <Nav.Link href="/resultados" className="custom-link">Resultados</Nav.Link>
+                                    <Nav.Link onClick={handleShowAlertsModal} className="custom-link">Alertas</Nav.Link>
                                 </>
                             )}
                         </Nav>
@@ -121,6 +165,52 @@ export function Navigation() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <Modal show={showAlertsModal} onHide={handleCloseAlertsModal} centered size="lg">
+                <Modal.Header closeButton>
+                    <Modal.Title>Alertas</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="table-responsive">
+                        <Table striped bordered hover>
+                            <thead>
+                            <tr>
+                                <th>Email</th>
+                                <th>Horário</th>
+                                <th>Assunto</th>
+                                <th>Mensagem</th>
+                                <th>Ações</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {alerts.map((alert) => (
+                                <tr key={alert.id}>
+                                    <td>{alert.email}</td>
+                                    <td>{new Date(alert.schedule_time).toLocaleString()}</td>
+                                    <td>{alert.subject}</td>
+                                    <td>{alert.message}</td>
+                                    <td>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            onClick={() => deleteAlert(alert.id)}
+                                        >
+                                            Deletar
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                            </tbody>
+                        </Table>
+                    </div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={handleCloseAlertsModal}>
+                        Fechar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
         </>
     );
 }

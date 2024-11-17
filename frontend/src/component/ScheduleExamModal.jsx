@@ -166,7 +166,6 @@ function ScheduleExamModal({
                         </Form.Control>
                     </Form.Group>
 
-                    {/* Restante dos campos */}
                     <Form.Group controlId="formMes">
                         <Form.Label>Mês da Prova</Form.Label>
                         <Form.Control

@@ -1,9 +1,12 @@
 from django.core.serializers import serialize
+from django.http import HttpResponse
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import ExamLocation, ExamTime, Calendar, ExamScheduled
-from .serializers import ExamLocationSerializer, ExamLocationTimeSerializer, ExamLocationCalendarSerializer
+from .models import ExamLocation, ExamTime, Calendar, ExamScheduled, ScheduledEmail
+from .serializers import ExamLocationSerializer, ExamLocationTimeSerializer, ExamLocationCalendarSerializer, \
+    ScheduledEmailSerializer
 from exams.models import Exam
+from django.shortcuts import render
 
 class ExamLocationView(APIView):
     def get(self, request):
@@ -71,3 +74,38 @@ class ExamScheduledView(APIView):
             )
 
         return Response({'message': 'Prova agendada com sucesso'}, status=201)
+
+class ScheduleEmailView(APIView):
+    def post(self, request):
+        user = request.user
+        email = request.data.get('email')
+        subject = request.data.get('subject')
+        message = request.data.get('message')
+        schedule_time = request.data.get('schedule_time')
+
+
+        ScheduledEmail.objects.create(
+            user=user,
+            email=email,
+            subject=subject,
+            message=message,
+            schedule_time=schedule_time,
+        )
+
+        return Response({"message": "Email agendado com sucesso"})
+
+    def get(self, request):
+        user = request.user
+        emails = ScheduledEmail.objects.filter(user=user, sent=False)
+        serializer = ScheduledEmailSerializer(emails, many=True)
+        return Response({'emails': serializer.data}, status=200)
+
+    def delete(self, request, id):
+        try:
+            email = ScheduledEmail.objects.get(id=id, user=request.user)
+            email.delete()
+            return Response({"message": "Email deletado com sucesso"}, status=204)
+        except ScheduledEmail.DoesNotExist:
+            return Response({"error": "Email não encontrado"}, status=404)
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)

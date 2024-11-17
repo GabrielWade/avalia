@@ -3,16 +3,17 @@ import {Table, Button} from 'react-bootstrap';
 import axios from 'axios';
 import {getSubjects} from '../api/UserSubject';
 import ScheduleExamModal from './ScheduleExamModal';
-
+import ScheduleAlertModal from './ScheduleAlertModal';
 import '../styles/global.css';
 
 function TableComponent() {
     const [userId, setUserId] = useState(null);
     const [materias, setMaterias] = useState([]);
     const [locaisDeProva, setLocaisDeProva] = useState([]);
-    const [showModal, setShowModal] = useState(false);
+    const [showExamModal, setShowExamModal] = useState(false);
     const [materiaSelecionada, setMateriaSelecionada] = useState(null);
     const [examesDaMateria, setExamesDaMateria] = useState([]);
+    const [showAlertModal, setShowAlertModal] = useState(false);
 
     useEffect(() => {
         const fetchLocaisDeProva = async () => {
@@ -42,7 +43,7 @@ function TableComponent() {
 
     const handleAgendarProva = async (materia) => {
         setMateriaSelecionada(materia);
-        setShowModal(true);
+        setShowExamModal(true);
 
         try {
             const {data} = await axios.get(`http://localhost:8000/exams/exam/${materia.subject}`);
@@ -53,10 +54,18 @@ function TableComponent() {
         }
     };
 
-    const handleCloseModal = () => {
-        setShowModal(false);
+    const handleCloseExamModal = () => {
+        setShowExamModal(false);
         setMateriaSelecionada(null);
         setExamesDaMateria([]);
+    };
+
+    const handleCriarAlerta = () => {
+        setShowAlertModal(true);
+    };
+
+    const handleCloseAlertModal = () => {
+        setShowAlertModal(false);
     };
 
     return (
@@ -65,7 +74,7 @@ function TableComponent() {
                 <thead>
                 <tr>
                     <th className="bold-heading">Matérias</th>
-                    <th></th>
+                    <th>Ações</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -73,8 +82,19 @@ function TableComponent() {
                     <tr key={materia.id}>
                         <td>{materia.subject_name}</td>
                         <td>
-                            <Button variant="primary" size="sm" onClick={() => handleAgendarProva(materia)}>
+                            <Button
+                                variant="primary"
+                                size="sm"
+                                onClick={() => handleAgendarProva(materia)}
+                            >
                                 Agendar Prova
+                            </Button>{' '}
+                            <Button
+                                variant="secondary"
+                                size="sm"
+                                onClick={handleCriarAlerta}
+                            >
+                                Criar Alerta
                             </Button>
                         </td>
                     </tr>
@@ -84,11 +104,19 @@ function TableComponent() {
 
             {materiaSelecionada && (
                 <ScheduleExamModal
-                    showModal={showModal}
-                    handleCloseModal={handleCloseModal}
+                    showModal={showExamModal}
+                    handleCloseModal={handleCloseExamModal}
                     materiaSelecionada={materiaSelecionada}
                     examesDaMateria={examesDaMateria}
                     locaisDeProva={locaisDeProva}
+                    userId={userId}
+                />
+            )}
+
+            {showAlertModal && (
+                <ScheduleAlertModal
+                    showModal={showAlertModal}
+                    handleCloseModal={handleCloseAlertModal}
                     userId={userId}
                 />
             )}
