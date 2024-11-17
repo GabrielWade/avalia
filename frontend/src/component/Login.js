@@ -6,7 +6,7 @@ import {loadSlim} from "tsparticles-slim";
 export const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState(''); // Estado para a mensagem de erro
+    const [errorMessage, setErrorMessage] = useState('');
 
     const submit = async (e) => {
         e.preventDefault();
@@ -36,14 +36,14 @@ export const Login = () => {
             window.location.href = '/';
         } catch (error) {
             console.error("Login failed:", error);
-            setErrorMessage("Invalid username or password. Please try again."); // Define a mensagem de erro
+            setErrorMessage("Invalid username or password. Please try again.");
         }
     };
 
     const particlesInit = useCallback(async (engine) => {
         console.log("Particles engine initialized");
         await loadSlim(engine);
-    }, []); // useCallback para evitar recriação ao digitar
+    }, []);
 
     const particlesOptions = {
         particles: {
@@ -106,7 +106,6 @@ export const Login = () => {
                 background: "radial-gradient(circle at top, #1e3a8a, #1e293b, #0f172a)",
             }}
         >
-            {/* Particles Background */}
             <Particles
                 id="tsparticles"
                 init={particlesInit}
@@ -120,7 +119,6 @@ export const Login = () => {
                     height: "100%",
                 }}
             />
-            {/* Login Form */}
             <div
                 className="Auth-form-container"
                 style={{
