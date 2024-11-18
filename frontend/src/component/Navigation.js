@@ -111,11 +111,21 @@ export function Navigation() {
                                         {user.username}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        {user.is_superuser && (
-                                            <Dropdown.Item onClick={handleGoToAdmin}>
-                                                Grupo: Super User
-                                            </Dropdown.Item>
-                                        )}
+                                        {
+                                            user.is_superuser ? (
+                                                <Dropdown.Item onClick={handleGoToAdmin}>
+                                                    Grupo: Super User
+                                                </Dropdown.Item>
+                                            ) : user.is_staff ? (
+                                                <Dropdown.Item onClick={handleGoToAdmin}>
+                                                    Grupo: Staff User
+                                                </Dropdown.Item>
+                                            ) : (
+                                                <Dropdown.Item>
+                                                    Grupo: Aluno
+                                                </Dropdown.Item>
+                                            )
+                                        }
                                         <Dropdown.Item onClick={handleShowTermsModal}>
                                             Termos de Uso
                                         </Dropdown.Item>
